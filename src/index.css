@@ -26,6 +26,14 @@ aside {
   position: fixed;
   top: 0;
   right: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: .2s;
+}
+
+aside.show {
+  visibility: visible;
+  opacity: 1;
 }
 
 ul {

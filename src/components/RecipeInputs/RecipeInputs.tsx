@@ -6,12 +6,18 @@ import {
   Typography,
 } from '@mui/material';
 import './RecipeInputs.css';
+import { useStore } from '../../store/useStore';
+import { Ingredients } from '../Ingredients/Ingredients';
 
 export const RecipeInputs = () => {
+  const closeForm = useStore(state => state.closeForm);
+
   return (
     <Paper>
       <div className='close'>
-        <button className='button-close'>×</button>
+        <button className='button-close' onClick={closeForm}>
+          ×
+        </button>
       </div>
 
       <form>
@@ -58,33 +64,11 @@ export const RecipeInputs = () => {
 
           <ul className='ingredients-list'>
             <li>
-              <label>
-                <Typography variant='h3'>Name</Typography>
-                <Input
-                  type='text'
-                  required
-                  name='name'
-                  placeholder='sugar, flour, etc.'
-                />
-              </label>
-
-              <label>
-                <Typography variant='h3'>Amount</Typography>
-                <Input
-                  type='text'
-                  required
-                  name='name'
-                  placeholder='piece, tablespoon, cup, etc.'
-                />
-              </label>
-
-              <button className='button-remove'>×</button>
+              <Ingredients />
             </li>
           </ul>
 
-          <Button color='primary'>
-            Add Ingredient
-          </Button>
+          <Button color='primary'>Add Ingredient</Button>
         </fieldset>
       </form>
     </Paper>
