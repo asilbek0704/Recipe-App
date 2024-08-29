@@ -4,14 +4,15 @@ import './RecipeList.css';
 import { useStore } from '../../store/useStore';
 
 export const RecipeList = () => {
-  const recipes = useStore(state => state.recipesList);
+  const recipesList = useStore(state => state.recipesList);
   const openForm = useStore(state => state.openForm);
-  const addRecipe = useStore(state => state.addRecipe);
+  const createRecipe = useStore(state => state.createRecipe);
+  const fetchRecipe = useStore(state => state.fetchRecipe);
 
   return (
     <>
       <ul className='recipe-list'>
-        {recipes.map(recipe => (
+        {recipesList.map(recipe => (
           <li className='recipe-item' key={recipe.id}>
             <Recipe {...recipe} />
           </li>
@@ -19,19 +20,14 @@ export const RecipeList = () => {
       </ul>
 
       <div className='add'>
-        <Button color='primary' onClick={
-          () => {
+        <Button
+          color='primary'
+          onClick={() => {
+            createRecipe();
+            fetchRecipe();
             openForm();
-            addRecipe({
-              id: Math.random().toString(36).substring(2),
-              title: "",
-              cooktime: 0,
-              servings: 0,
-              instructions: "",
-              ingredients: []
-            })
-          }
-        }>
+          }}
+        >
           Add Recipe
         </Button>
       </div>

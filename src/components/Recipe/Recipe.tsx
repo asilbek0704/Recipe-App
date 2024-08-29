@@ -1,17 +1,20 @@
 import { Button, Paper, Typography } from '@mui/material';
-import type Recipe from '../../store/types/Recipe.type';
+import { type TRecipe } from '../../store/types/RecipeSlice.type';
 import './Recipe.css';
 import { useStore } from '../../store/useStore';
 
 export const Recipe = ({
   id,
   title,
-  cooktime,
+  cookTime,
   servings = 1,
   instructions,
   ingredients,
-}: Recipe) => {
+}: TRecipe) => {
+  const fetchRecipe = useStore(state => state.fetchRecipe);
   const removeRecipe = useStore(state => state.removeRecipe);
+  const openForm = useStore(state => state.openForm);
+  const closeForm = useStore(state => state.closeForm);
 
   return (
     <Paper className='recipe'>
@@ -19,10 +22,25 @@ export const Recipe = ({
         <Typography variant='h1'>{title}</Typography>
 
         <div className='buttons'>
-          <Button color='primary' sx={{ marginRight: 0.5 }}>
+          <Button
+            color='primary'
+            sx={{ marginRight: 0.5 }}
+            onClick={() => {
+              closeForm();
+              fetchRecipe(id);
+              openForm();
+            }}
+          >
             edit
           </Button>
-          <Button color='error' onClick={() => removeRecipe(id)}>
+          <Button
+            color='error'
+            onClick={() => {
+              removeRecipe(id);
+              fetchRecipe();
+              closeForm();
+            }}
+          >
             delete
           </Button>
         </div>
@@ -32,7 +50,7 @@ export const Recipe = ({
         <div className='recipe-row'>
           <Typography variant='h3'>Cooktime:</Typography>
           <span>
-            <Typography variant='caption'>{cooktime}</Typography>
+            <Typography variant='caption'>{cookTime}</Typography>
           </span>
         </div>
 
@@ -54,8 +72,8 @@ export const Recipe = ({
           <Typography variant='h3'>Ingredients:</Typography>
 
           <ul className='ingredients-list'>
-            {ingredients.map(ingredient => (
-              <li key={ingredient[0]}>
+            {ingredients?.map((ingredient) => (
+              <li key={id + ingredient[0]}>
                 <Typography variant='body1'>{ingredient[0]}</Typography>
                 <Typography variant='body1'>{ingredient[1]}</Typography>
               </li>
@@ -66,15 +84,3 @@ export const Recipe = ({
     </Paper>
   );
 };
-
-{
-  /* <Button color='primary'>Edit</Button>
-      <Button color='error'>delete</Button>
-      <Button color='primary'>Add recipe</Button>
-
-      <Typography variant='h1'>Plain chicken</Typography>
-      <Typography variant='h2'>Ingredients</Typography>
-      <Typography variant='h3'>Cooktime: </Typography>
-      <Typography variant='caption'>1:45</Typography>
-      <Typography variant='body1'>Meat 2 Pounds</Typography> */
-}

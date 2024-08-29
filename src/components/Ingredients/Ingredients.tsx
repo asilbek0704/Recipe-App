@@ -1,27 +1,40 @@
-import { Input, Typography } from "@mui/material";
+import { Input, Typography } from '@mui/material';
+import { Control, Controller } from 'react-hook-form';
+import { type TRecipe} from '../../store/types/RecipeSlice.type';
 
-export const Ingredients = () => (
-  <>
-    <label>
-      <Typography variant='h3'>Name</Typography>
-      <Input
-        type='text'
-        required
-        name='ingredient'
-        placeholder='sugar, flour, etc.'
-      />
-    </label>
+export const Ingredients = ({
+  onClick,
+  names,
+  control,
+}: {
+  onClick: () => void;
+  control: Control<TRecipe>;
+  names: [string, string]
+}) => {
+  return (
+    <>
+      <label>
+        <Typography variant='h3'>Name</Typography>
 
-    <label>
-      <Typography variant='h3'>Amount</Typography>
-      <Input
-        type='text'
-        required
-        name='ingredient'
-        placeholder='piece, tablespoon, cup, etc.'
-      />
-    </label>
+        <Controller
+          control={control}
+          name={names[0]}
+          render={({ field }) => <Input {...field} />}
+        />
+      </label>
 
-    <button className='button-remove'>×</button>
-  </>
-);
+      <label>
+        <Typography variant='h3'>Amount</Typography>
+        <Controller
+          control={control}
+          name={names[1]}
+          render={({ field }) => <Input {...field} />}
+        />
+      </label>
+
+      <button className='button-remove' onClick={onClick}>
+        ×
+      </button>
+    </>
+  );
+};

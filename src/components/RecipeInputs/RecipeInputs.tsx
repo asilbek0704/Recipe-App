@@ -5,12 +5,31 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import './RecipeInputs.css';
-import { useStore } from '../../store/useStore';
 import { Ingredients } from '../Ingredients/Ingredients';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { useDebouncedCallback } from 'use-debounce';
+import { useStore } from '../../store/useStore';
+import { type TRecipe } from '../../store/types/RecipeSlice.type';
+import './RecipeInputs.css';
 
 export const RecipeInputs = () => {
   const closeForm = useStore(state => state.closeForm);
+  const updateRecipe = useStore(state => state.updateRecipe);
+  const currentRecipe = useStore(state => state.currentRecipe) as TRecipe;
+
+  const { handleSubmit, control } = useForm<TRecipe>({
+    values: currentRecipe,
+    shouldUnregister: true,
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'ingredients',
+  });
+
+  const onSubmit = useDebouncedCallback((data: TRecipe) => {
+    updateRecipe(currentRecipe.id, data);
+  }, 750);
 
   return (
     <Paper>
@@ -20,39 +39,51 @@ export const RecipeInputs = () => {
         </button>
       </div>
 
-      <form>
+      <form onChange={handleSubmit(onSubmit)}>
         <fieldset className='main-fields'>
           <label>
             <Typography variant='h2'>Name</Typography>
-            <Input type='text' required name='name' placeholder='Apple Pie' />
+            <Controller
+              control={control}
+              name='title'
+              render={({ field }) => <Input {...field} />}
+            />
           </label>
 
           <label className='label-minutes'>
             <Typography variant='h2'>Cook Time</Typography>
-            <Input
-              type='number'
-              required
+            <Controller
+              control={control}
               name='cookTime'
-              placeholder='10'
-              endAdornment={
-                <InputAdornment position='end'>mins</InputAdornment>
-              }
+              render={({ field }) => (
+                <Input
+                  type='number'
+                  endAdornment={
+                    <InputAdornment position='end'>mins</InputAdornment>
+                  }
+                  {...field}
+                />
+              )}
             />
           </label>
 
           <label>
             <Typography variant='h2'>Servings</Typography>
-            <Input type='number' required name='servings' placeholder='1' />
+
+            <Controller
+              control={control}
+              name='servings'
+              render={({ field }) => <Input {...field} />}
+            />
           </label>
 
           <label>
             <Typography variant='h2'>Instructions</Typography>
-            <Input
-              multiline
-              required
+
+            <Controller
+              control={control}
               name='instructions'
-              placeholder='Step 1: ...'
-              rows={5}
+              render={({ field }) => <Input {...field} multiline rows={5} />}
             />
           </label>
         </fieldset>
@@ -63,12 +94,29 @@ export const RecipeInputs = () => {
           </legend>
 
           <ul className='ingredients-list'>
-            <li>
-              <Ingredients />
-            </li>
+            {fields.map((field, index) => (
+              <li key={field.id}>
+                <Ingredients
+                  control={control}
+                  names={[`ingredients.${index}.0`, `ingredients.${index}.1`]}
+                  onClick={() => {
+                    remove(index);
+                    handleSubmit(onSubmit)();
+                  }}
+                />
+              </li>
+            ))}
           </ul>
 
-          <Button color='primary'>Add Ingredient</Button>
+          <Button
+            type='button'
+            onClick={() => {
+              append([['', '']]);
+              handleSubmit(onSubmit)();
+            }}
+          >
+            Add Recipe
+          </Button>
         </fieldset>
       </form>
     </Paper>

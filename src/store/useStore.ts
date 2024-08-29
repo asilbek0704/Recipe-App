@@ -1,32 +1,33 @@
 import { create } from "zustand";
-import Store from "./types/Store.type";
-import Recipe from "./types/Recipe.type";
+import { devtools } from "zustand/middleware";
+import { createFormSlice } from "./slices/createFormSlice";
+import { createRecipeSlice } from "./slices/createRecipeSlice";
+import { TRecipeSlice } from "./types/RecipeSlice.type";
+import { TFormSlice } from "./types/FormSlice.type";
 
-export const useStore = create<Store>(set => ({
-  recipesList: JSON.parse(localStorage.getItem("recipes") || "[]") as Recipe[],
-  addRecipe: (recipe) => set((state) => {
-    const recipesList = [...state.recipesList, recipe];
-    localStorage.setItem("recipesList", JSON.stringify(recipesList));
+// const dummyRecipes = [
+//   {
+//     id: "1",
+//     title: "Tomato Soup",
+//     cookTime: 25,
+//     servings: 2,
+//     instructions: "INSTRUCTIONS...",
+//     ingredients: [["tomato", "6"], ['salt', "1 tsp"]]
+//   },
+//   {
+//     id: "2",
+//     title: "Grilled Chicken",
+//     cookTime: 40,
+//     servings: 8,
+//     instructions: "INSTRUCTIONS...",
+//     ingredients: [["meat", "6"], ['garlic', "10"], ['salt', "1 tsp"]]
+//   },
+// ]
+// localStorage.setItem("recipesList", JSON.stringify(dummyRecipes))
 
-    return { recipesList }
-  }),
-  removeRecipe: (id) => set((state) => {
-    const recipesList = state.recipesList.filter(recipe => recipe.id != id);
-    localStorage.setItem("recipesList", JSON.stringify(recipesList));
-
-    return { recipesList }
-  }),
-
-  recipe: {
-    id: "",
-    title: "",
-    cooktime: 0,
-    servings: 0,
-    instructions: "",
-    ingredients: []
-  },
-
-  isFormShown: false,
-  openForm: () => set({ isFormShown: true }),
-  closeForm: () => set({ isFormShown: false })
-}))
+export const useStore = create<TRecipeSlice & TFormSlice, [["zustand/devtools", never]]>(devtools(
+  (...a) => ({
+    ...createFormSlice(...a),
+    ...createRecipeSlice(...a)
+  })
+))
