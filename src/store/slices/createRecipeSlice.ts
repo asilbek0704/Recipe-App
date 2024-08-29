@@ -1,6 +1,7 @@
-import { TRecipe } from "../types/RecipeSlice.type";
+import { TRecipe, TRecipeSlice } from "../types/RecipeSlice.type";
 
-export const createRecipeSlice = (set) => ({
+export const createRecipeSlice = (set) => (
+  {
   recipesList: JSON.parse(localStorage.getItem("recipesList") || "[]") as TRecipe[],
   currentRecipe: {
     id: '',
@@ -15,7 +16,7 @@ export const createRecipeSlice = (set) => ({
     if (!id) {
       return { currentRecipe: state.recipesList.slice(-1)[0] }
     } else {
-      const currentRecipe = state.recipesList.find(recipe => recipe.id == id);
+      const currentRecipe = state.recipesList.find((recipe: TRecipe) => recipe.id == id);
       return { currentRecipe }
     }
   }),
@@ -45,7 +46,7 @@ export const createRecipeSlice = (set) => ({
 
   updateRecipe: (id, formData) => set(state => {
     console.log("formData", formData);
-    const recipesList = state.recipesList.map(recipe => {
+    const recipesList = state.recipesList.map((recipe: TRecipe) => {
       console.log("recipe", recipe);
       if (recipe.id == id) {
         // Error Found
@@ -58,4 +59,5 @@ export const createRecipeSlice = (set) => ({
     localStorage.setItem("recipesList", JSON.stringify(recipesList));
     return { recipesList }
   }),
-})
+} as TRecipeSlice
+)
