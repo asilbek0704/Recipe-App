@@ -1,21 +1,18 @@
-import {
-  Button,
-  Input,
-  InputAdornment,
-  Paper,
-  Typography,
-} from '@mui/material';
-import { Ingredients } from '../Ingredients/Ingredients';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Button, Paper, Typography } from '@mui/material';
+import { Ingredients } from '../Ingredient/Ingredient';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { useDebouncedCallback } from 'use-debounce';
 import { useStore } from '../../store/useStore';
 import { type TRecipe } from '../../store/types/RecipeSlice.type';
+import { CloseButton } from '../CloseButton/CloseButton';
+import { InputLabel } from '../InputLabel/InputLabel';
+import { InputSimple } from '../InputSimple/InputSimple';
 import './RecipeInputs.css';
 
 export const RecipeInputs = () => {
   const closeForm = useStore(state => state.closeForm);
   const updateRecipe = useStore(state => state.updateRecipe);
-  const currentRecipe = useStore(state => state.currentRecipe) as TRecipe;
+  const currentRecipe = useStore(state => state.currentRecipe);
 
   const { handleSubmit, control } = useForm<TRecipe>({
     values: currentRecipe,
@@ -28,64 +25,41 @@ export const RecipeInputs = () => {
   });
 
   const onSubmit = useDebouncedCallback((data: TRecipe) => {
+    console.log(data);
     updateRecipe(currentRecipe.id, data);
   }, 750);
 
   return (
     <Paper>
       <div className='close'>
-        <button className='button-close' onClick={closeForm}>
+        <CloseButton className='button-close' onClick={closeForm}>
           ×
-        </button>
+        </CloseButton>
       </div>
 
       <form onChange={handleSubmit(onSubmit)}>
         <fieldset className='main-fields'>
-          <label>
-            <Typography variant='h2'>Name</Typography>
-            <Controller
-              control={control}
-              name='title'
-              render={({ field }) => <Input {...field} />}
-            />
-          </label>
+          <InputLabel title='Name'>
+            <InputSimple name='title' control={control} type='text' />
+          </InputLabel>
 
-          <label className='label-minutes'>
-            <Typography variant='h2'>Cook Time</Typography>
-            <Controller
-              control={control}
+          <InputLabel title='Cook Time'>
+            <InputSimple
               name='cookTime'
-              render={({ field }) => (
-                <Input
-                  type='number'
-                  endAdornment={
-                    <InputAdornment position='end'>mins</InputAdornment>
-                  }
-                  {...field}
-                />
-              )}
-            />
-          </label>
-
-          <label>
-            <Typography variant='h2'>Servings</Typography>
-
-            <Controller
               control={control}
-              name='servings'
-              render={({ field }) => <Input {...field} />}
+              type='text'
+              adornmentPosition='end'
+              adornmentText='mins'
             />
-          </label>
+          </InputLabel>
 
-          <label>
-            <Typography variant='h2'>Instructions</Typography>
+          <InputLabel title='Servings'>
+            <InputSimple name='servings' control={control} type='number' />
+          </InputLabel>
 
-            <Controller
-              control={control}
-              name='instructions'
-              render={({ field }) => <Input {...field} multiline rows={5} />}
-            />
-          </label>
+          <InputLabel title='Instructions'>
+            <InputSimple name='instructions' control={control} type='text' />
+          </InputLabel>
         </fieldset>
 
         <fieldset className='ingredients'>
@@ -94,24 +68,31 @@ export const RecipeInputs = () => {
           </legend>
 
           <ul className='ingredients-list'>
-            {fields.map((field, index) => (
-              <li key={field.id}>
-                <Ingredients
-                  control={control}
-                  names={[`ingredients.${index}.0`, `ingredients.${index}.1`]}
-                  onClick={() => {
-                    remove(index);
-                    handleSubmit(onSubmit)();
-                  }}
-                />
-              </li>
-            ))}
+            {/* {console.log(fields)} */}
+            {fields.map((field, index) => {
+              // console.log(index, field);
+              return (
+                <li key={field.id}>
+                  <Ingredients
+                    control={control}
+                    names={{
+                      name: `ingredients.${index}.name`,
+                      amount: `ingredients.${index}.amount`,
+                    }}
+                    onClick={() => {
+                      remove(index);
+                      handleSubmit(onSubmit)();
+                    }}
+                  />
+                </li>
+              );
+            })}
           </ul>
 
           <Button
             type='button'
             onClick={() => {
-              append([['', '']]);
+              append([{ name: '', amount: '' }]);
               handleSubmit(onSubmit)();
             }}
           >

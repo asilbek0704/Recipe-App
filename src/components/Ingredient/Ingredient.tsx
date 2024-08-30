@@ -1,6 +1,6 @@
 import { Input, Typography } from '@mui/material';
 import { Control, Controller } from 'react-hook-form';
-import { type TRecipe} from '../../store/types/RecipeSlice.type';
+import { type TRecipe } from '../../store/types/RecipeSlice.type';
 
 export const Ingredients = ({
   onClick,
@@ -9,7 +9,10 @@ export const Ingredients = ({
 }: {
   onClick: () => void;
   control: Control<TRecipe>;
-  names: [string, string]
+  names: {
+    name: `ingredients.${number}.name`;
+    amount: `ingredients.${number}.amount`;
+  };
 }) => {
   return (
     <>
@@ -18,7 +21,7 @@ export const Ingredients = ({
 
         <Controller
           control={control}
-          name={names[0]}
+          name={names.name}
           render={({ field }) => <Input {...field} />}
         />
       </label>
@@ -27,7 +30,7 @@ export const Ingredients = ({
         <Typography variant='h3'>Amount</Typography>
         <Controller
           control={control}
-          name={names[1]}
+          name={names.amount}
           render={({ field }) => <Input {...field} />}
         />
       </label>

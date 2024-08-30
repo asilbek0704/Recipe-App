@@ -72,12 +72,17 @@ export const Recipe = ({
           <Typography variant='h3'>Ingredients:</Typography>
 
           <ul className='ingredients-list'>
-            {ingredients?.map((ingredient) => (
-              <li key={id + ingredient[0]}>
-                <Typography variant='body1'>{ingredient[0]}</Typography>
-                <Typography variant='body1'>{ingredient[1]}</Typography>
-              </li>
-            ))}
+            {/* {console.log(ingredients)} */}
+            {ingredients.map(ingredient => {
+              // console.log(ingredient)
+
+              return (
+                <li key={id + ingredient.name}>
+                  <Typography variant='body1'>{ingredient.name}</Typography>
+                  <Typography variant='body1'>{ingredient.amount}</Typography>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

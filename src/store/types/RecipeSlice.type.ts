@@ -4,12 +4,12 @@ export type TRecipe = {
   cookTime: number,
   servings: number,
   instructions: string,
-  ingredients: [string, string][]
+  ingredients: { name: string, amount: string }[]
 }
 
 export type TRecipeSlice = {
   recipesList: TRecipe[],
-  currentRecipe: TRecipe | null,
+  currentRecipe: TRecipe,
 
   createRecipe: () => void,
   removeRecipe: (id: string) => void,
