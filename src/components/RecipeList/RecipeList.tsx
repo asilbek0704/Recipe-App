@@ -9,6 +9,12 @@ export const RecipeList = () => {
   const createRecipe = useStore(state => state.createRecipe);
   const fetchRecipe = useStore(state => state.fetchRecipe);
 
+  const handleAddClick = () => {
+    createRecipe();
+    fetchRecipe();
+    openForm();
+  };
+
   return (
     <>
       <ul className='recipe-list'>
@@ -20,14 +26,7 @@ export const RecipeList = () => {
       </ul>
 
       <div className='add'>
-        <Button
-          color='primary'
-          onClick={() => {
-            createRecipe();
-            fetchRecipe();
-            openForm();
-          }}
-        >
+        <Button color='primary' onClick={handleAddClick}>
           Add Recipe
         </Button>
       </div>

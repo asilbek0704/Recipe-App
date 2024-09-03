@@ -1,22 +1,23 @@
 import { Input, InputAdornment } from '@mui/material';
-import { Control, Controller } from 'react-hook-form';
-import { TRecipe } from '../../store/types/RecipeSlice.type';
+import { Controller, useFormContext } from 'react-hook-form';
 
 interface IInputSimpleProps {
   name: string;
-  control: Control<TRecipe>;
-  type: 'number' | 'text';
+  type?: 'number' | 'text';
   adornmentPosition?: 'end' | 'start' | null;
   adornmentText?: string;
+  rows?: number;
 }
 
 export const InputSimple = ({
   name,
-  control,
   type = 'text',
   adornmentPosition = null,
   adornmentText = '',
+  rows,
 }: IInputSimpleProps) => {
+  const { control } = useFormContext();
+
   let adornment = null;
 
   if (adornmentPosition && adornmentText) {
@@ -37,6 +38,9 @@ export const InputSimple = ({
           type={type}
           endAdornment={adornmentPosition == 'end' ? adornment : null}
           startAdornment={adornmentPosition == 'start' ? adornment : null}
+          autoComplete='off'
+          multiline={rows ? true : false}
+          rows={rows ?? undefined}
         />
       )}
     />

@@ -16,30 +16,30 @@ export const Recipe = ({
   const openForm = useStore(state => state.openForm);
   const closeForm = useStore(state => state.closeForm);
 
+  const handleEditClick = (id: string) => {
+    closeForm();
+    fetchRecipe(id);
+    openForm();
+  };
+
+  const handleRemoveClick = (id: string) => {
+    removeRecipe(id);
+    fetchRecipe();
+    closeForm();
+  }
+
   return (
     <Paper className='recipe'>
       <div className='recipe-top'>
         <Typography variant='h1'>{title}</Typography>
 
         <div className='buttons'>
-          <Button
-            color='primary'
-            sx={{ marginRight: 0.5 }}
-            onClick={() => {
-              closeForm();
-              fetchRecipe(id);
-              openForm();
-            }}
-          >
+          <Button color='primary' sx={{ marginRight: 0.5 }} onClick={() => handleEditClick(id)}>
             edit
           </Button>
           <Button
             color='error'
-            onClick={() => {
-              removeRecipe(id);
-              fetchRecipe();
-              closeForm();
-            }}
+            onClick={() => handleRemoveClick(id)}
           >
             delete
           </Button>
@@ -72,10 +72,7 @@ export const Recipe = ({
           <Typography variant='h3'>Ingredients:</Typography>
 
           <ul className='ingredients-list'>
-            {/* {console.log(ingredients)} */}
             {ingredients.map(ingredient => {
-              // console.log(ingredient)
-
               return (
                 <li key={id + ingredient.name}>
                   <Typography variant='body1'>{ingredient.name}</Typography>

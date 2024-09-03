@@ -1,25 +1,55 @@
-import { Ingredients } from "../Ingredient/Ingredient";
+import { Button } from '@mui/material';
+import { Ingredients } from '../Ingredient/Ingredient';
+import {
+  FieldValues,
+  SubmitHandler,
+  useFieldArray,
+  useFormContext,
+} from 'react-hook-form';
 
-export const IngredientsList = () => (
-  <ul className='ingredients-list'>
-    {/* {console.log(fields)} */}
-    {fields.map((field, index) => {
-      // console.log(index, field);
-      return (
-        <li key={field.id}>
-          <Ingredients
-            control={control}
-            names={{
-              name: `ingredients.${index}.name`,
-              amount: `ingredients.${index}.amount`,
-            }}
-            onClick={() => {
-              remove(index);
-              handleSubmit(onSubmit)();
-            }}
-          />
-        </li>
-      );
-    })}
-  </ul>
-);
+interface IIngredientsList {
+  onSubmit: SubmitHandler<FieldValues>;
+}
+
+export const IngredientsList = ({ onSubmit }: IIngredientsList) => {
+  const { control, handleSubmit } = useFormContext();
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'ingredients',
+  });
+
+  const handleAddClick = () => {
+    append([{ name: '', amount: '' }]);
+    handleSubmit(onSubmit)();
+  };
+
+  const handleRemoveClick = (index: number) => {
+    remove(index);
+    handleSubmit(onSubmit)();
+  };
+
+  return (
+    <>
+      <ul className='ingredients-list'>
+        {fields.map((field, index) => {
+          return (
+            <li key={field.id}>
+              <Ingredients
+                names={{
+                  name: `ingredients.${index}.name`,
+                  amount: `ingredients.${index}.amount`,
+                }}
+                onClick={() => handleRemoveClick(index)}
+              />
+            </li>
+          );
+        })}
+      </ul>
+
+      <Button type='button' onClick={handleAddClick}>
+        + Ingredient
+      </Button>
+    </>
+  );
+};

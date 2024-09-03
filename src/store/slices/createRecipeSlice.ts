@@ -5,7 +5,6 @@ import { TFormSlice } from "../types/FormSlice.type";
 export const createRecipeSlice: StateCreator<TRecipeSlice & TFormSlice, [], [], TRecipeSlice> =
   (set) => (
     {
-      // recipesList: JSON.parse(localStorage.getItem("recipesList") || "[]"),
       recipesList: [],
       currentRecipe: {
         id: '',
@@ -13,7 +12,7 @@ export const createRecipeSlice: StateCreator<TRecipeSlice & TFormSlice, [], [], 
         cookTime: 1,
         servings: 1,
         instructions: "",
-        ingredients: [{ name: "", amount: "" }]
+        ingredients: [{ name: "", amount: "" }],
       },
 
       fetchRecipe: (id?) => set(state => {
@@ -21,6 +20,7 @@ export const createRecipeSlice: StateCreator<TRecipeSlice & TFormSlice, [], [], 
           return { currentRecipe: state.recipesList.slice(-1)[0] }
         } else {
           const currentRecipe = state.recipesList.find(recipe => recipe.id == id);
+
           return { currentRecipe }
         }
       }),
@@ -37,21 +37,17 @@ export const createRecipeSlice: StateCreator<TRecipeSlice & TFormSlice, [], [], 
 
         const recipesList = [...state.recipesList, recipe];
 
-        // localStorage.setItem("recipesList", JSON.stringify(recipesList));
         return { recipesList }
       }),
 
       removeRecipe: (id) => set(state => {
         const recipesList = state.recipesList.filter(recipe => recipe.id != id);
 
-        // localStorage.setItem("recipesList", JSON.stringify(recipesList));
         return { recipesList }
       }),
 
       updateRecipe: (id, formData) => set(state => {
-        console.log("formData", formData);
         const recipesList = state.recipesList.map((recipe: TRecipe) => {
-          console.log("recipe", recipe);
           if (recipe.id == id) {
             recipe = { ...recipe, ...formData };
           }
@@ -59,7 +55,6 @@ export const createRecipeSlice: StateCreator<TRecipeSlice & TFormSlice, [], [], 
           return recipe
         });
 
-        // localStorage.setItem("recipesList", JSON.stringify(recipesList));
         return { recipesList }
       }),
     }

@@ -1,19 +1,17 @@
 import { Input, Typography } from '@mui/material';
-import { Control, Controller } from 'react-hook-form';
-import { type TRecipe } from '../../store/types/RecipeSlice.type';
+import { Controller, useFormContext } from 'react-hook-form';
 
 export const Ingredients = ({
   onClick,
   names,
-  control,
 }: {
   onClick: () => void;
-  control: Control<TRecipe>;
   names: {
     name: `ingredients.${number}.name`;
     amount: `ingredients.${number}.amount`;
   };
 }) => {
+  const { control } = useFormContext();
   return (
     <>
       <label>
