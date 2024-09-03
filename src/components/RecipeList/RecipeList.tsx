@@ -12,7 +12,7 @@ export const RecipeList = () => {
   return (
     <>
       <ul className='recipe-list'>
-        {recipesList.map(recipe => (
+        {recipesList?.map(recipe => (
           <li className='recipe-item' key={recipe.id}>
             <Recipe {...recipe} />
           </li>
